@@ -47,79 +47,85 @@
         </div>
       </section>
 
-      <!-- Map Section -->
-      <section class="section">
-        <h2 class="section-title">Map</h2>
-        <div id="map" style="width: 100%; height: 400px;"></div>
-      </section>
-    </main>
+    <section class="section">
+<h2 class="section-title">Map</h2>
+<div id="map" style="width: 100%; height: 400px;"></div>
+</section>
+</main>
 
-    <!-- Footer -->
-    <footer class="footer">
-      <a href="ar.html"><button class="ar-button">AR</button></a>
-      <a href="details.html"><button class="details-button">Details</button></a>
-    </footer>
-  </div>
+<!-- Footer -->
+<footer class="footer">
+<a href="ar.html"><button class="ar-button">AR</button></a>
+<a href="details.html"><button class="details-button">Details</button></a>
+</footer>
+</div>
 
-  <!-- Scripts -->
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
-  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+<!-- Scripts -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const map = L.map("map").setView([27.67088, 85.43969], 15);
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+const map = L.map("map").setView([27.67088, 85.43969], 15);
+const events = [
+{ latitude: 27.67088, longitude: 85.43969, title: "Hack the Circle Finals" },
+{ latitude: 27.6710406, longitude: 85.4390523, title: "Bhatti" },
+{ latitude: 27.6713345, longitude: 85.4391121, title: "Hotel" }
+];
 
-      // Add OpenStreetMap tiles
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: '© OpenStreetMap contributors'
-      }).addTo(map);
+// Add OpenStreetMap tiles
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+attribution: '© OpenStreetMap contributors'
+}).addTo(map);
 
-      // Marker for event location
-      const eventMarker = L.marker([27.67088, 85.43969])
-        .addTo(map)
-        .bindPopup("Hack the Circle Finals")
-        .openPopup();
+// Add markers for each event
+events.forEach(event => {
+L.marker([event.latitude, event.longitude])
+.addTo(map)
+.bindPopup(`<b>${event.title}</b>`)
+.openPopup();
+});
 
-      // Geolocation logic
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            console.log("User location retrieved successfully.");
-            const userLat = position.coords.latitude;
-            const userLng = position.coords.longitude;
+// Geolocation logic
+if (navigator.geolocation) {
+navigator.geolocation.getCurrentPosition(
+(position) => {
+console.log("User location retrieved successfully.");
+const userLat = position.coords.latitude;
+const userLng = position.coords.longitude;
 
-            // Add user's current location marker
-            const userMarker = L.marker([userLat, userLng])
-              .addTo(map)
-              .bindPopup("Your Current Location")
-              .openPopup();
+// Add user's current location marker
+const userMarker = L.marker([userLat, userLng])
+.addTo(map)
+.bindPopup("Your Current Location")
+.openPopup();
 
-            // Draw the route
-            const routeControl = L.Routing.control({
-              waypoints: [
-                L.latLng(userLat, userLng), // Start: user's location
-                L.latLng(27.67088, 85.43969) // End: Hack the Circle
-              ],
-              routeWhileDragging: true,
-              createMarker: function() { return null; }, // Hide markers
-              lineOptions: {
-                styles: [{ color: 'blue', weight: 4 }] // Customize the route line style
-              },
-              // Hide instructions UI
-            }).addTo(map);
-          },
-          (error) => {
-            console.error("Error retrieving geolocation:", error);
-            alert("Failed to retrieve location. Please check your browser settings.");
-          }
-        );
-      } else {
-        console.warn("Geolocation not supported. Default view set.");
-        alert("Geolocation is not supported by your browser.");
-      }
-    });
-  </script>
+// Draw the route
+const routeControl = L.Routing.control({
+waypoints: [
+L.latLng(userLat, userLng), // Start: user's location
+L.latLng(27.67088, 85.43969) // End: Hack the Circle
+],
+routeWhileDragging: true,
+createMarker: function() { return null; }, // Hide markers
+lineOptions: {
+styles: [{ color: 'blue', weight: 4 }] // Customize the route line style
+},
+// Hide instructions UI
+}).addTo(map);
+},
+(error) => {
+console.error("Error retrieving geolocation:", error);
+alert("Failed to retrieve location. Please check your browser settings.");
+}
+);
+} else {
+console.warn("Geolocation not supported. Default view set.");
+alert("Geolocation is not supported by your browser.");
+}
+});
+</script>
 </body>
 
 </html>
